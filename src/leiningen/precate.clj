@@ -40,9 +40,28 @@
           (update-in [:profiles :dev :dependencies] (fnil into {}) dev)))
     project))
 
+(defn multi-deps-profile [project [profile deps]]
+  (update-in project [:profiles (keyword profile) :dependencies]
+             (fnil into {}) deps))
+
+(defn multi-deps [project]
+  (let [deps (:multi-deps project)
+        project (dissoc project :multi-deps)]
+    (reduce multi-deps-profile project deps)))
+
+(def dev-deps-special-cases {'swank-clojure ['lein-swank "1.4.1"]
+                             'lein-multi nil})
+
+(defn special-case-dep [project [dev-dep replacement]]
+  (let [project (update-in project [:dev-dependencies]
+                           (fn [dev-deps] (remove #(= dev-dep (first %))
+                                                 dev-deps)))]
+    (if replacement
+      (update-in project [:plugins] (fnil conj {}) replacement)
+      project)))
+
 (defn special-case-dev-deps [project]
-  ;; TODO: handle swank-clojure -> lein-swank, etc
-  project)
+  (reduce special-case-dep project dev-deps-special-cases))
 
 (defn min-lein-version [project]
   (assoc project :min-lein-version "2.0.0"))
@@ -84,8 +103,9 @@
 (defn suggest-project-map [project]
   (-> project
       tidy-project
-      dev-dependencies
       special-case-dev-deps
+      dev-dependencies
+      multi-deps
       min-lein-version
       extra-classpath-dirs
       repositories-format
