@@ -1,13 +1,13 @@
 (ns leiningen.precate
   (:require [clojure.pprint :as pprint]
-            [clojure.java.io :as io]
-            [leiningen.core :as lein]))
+            [clojure.java.io :as io]))
 
 (defn defaults [project]
   (let [default-file (io/file (:root project) "default-project.clj")]
     (try
       (spit default-file "(defproject dummy \"1.0\")")
-      (lein/read-project (str default-file))
+      (require 'leiningen.core) ; dynamic so it at least loads in lein2
+      ((resolve 'leiningen.core/read-project) (str default-file))
       (finally (.delete default-file)))))
 
 (defn- tidy-key [default-project [k v]]
