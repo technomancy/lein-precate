@@ -6,10 +6,7 @@ Suggest a new project.clj that's compatible with Leiningen 2.
 
 ```
 $ lein plugin install lein-precate 0.1.0-SNAPSHOT
-```
-
-```
-$ cat project.clj
+$ cat project.clj # the original 1.x-compatible version:
 (defproject clojure-http-client "1.1.1-SNAPSHOT"
   :description "An HTTP client for Clojure."
   :source-path "src/clj"
@@ -17,13 +14,8 @@ $ cat project.clj
   :dev-dependencies [[swank-clojure "1.3.4"]]
   :dependencies [[org.clojure/clojure "1.2.1"]
                  [org.clojure/clojure-contrib "1.2.0"]])
-```
 
-```
 $ lein precate # let's see how that would look for Leiningen 2
-```
-
-```clj
 (defproject clojure-http-client "1.1.1-SNAPSHOT"
   :description "An HTTP client for Clojure."
   :source-path ["src/clj"]
