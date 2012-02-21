@@ -4,10 +4,38 @@ Suggest a new project.clj that's compatible with Leiningen 2.
 
 ## Usage
 
-This plugin is designed to be run under Leiningen 1.x:
+```
+$ lein plugin install lein-precate 0.1.0-SNAPSHOT
+```
 
-    $ lein plugin install lein-precate 0.1.0-SNAPSHOT
-    $ lein precate
+```
+$ cat project.clj
+(defproject clojure-http-client "1.1.1-SNAPSHOT"
+  :description "An HTTP client for Clojure."
+  :source-path "src/clj"
+  :extra-classpath-dirs ["dumb-stuff"]
+  :dev-dependencies [[swank-clojure "1.3.4"]]
+  :dependencies [[org.clojure/clojure "1.2.1"]
+                 [org.clojure/clojure-contrib "1.2.0"]])
+```
+
+```
+$ lein precate # let's see how that would look for Leiningen 2
+```
+
+```clj
+(defproject clojure-http-client "1.1.1-SNAPSHOT"
+  :description "An HTTP client for Clojure."
+  :source-path ["src/clj"]
+  :dependencies {org.clojure/clojure "1.2.1", 
+                 org.clojure/clojure-contrib "1.2.0"}
+  :profiles {:dev
+              {:resources-path ["dumb-stuff"],
+               :dependencies {swank-clojure "1.3.4"}}}
+  :min-lein-version "2.0.0")
+```
+
+This plugin is designed to be run under Leiningen 1.x.
 
 ## License
 
