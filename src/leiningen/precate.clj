@@ -123,6 +123,9 @@
   [project]
   (when (.startsWith (System/getenv "LEIN_VERSION") "2")
     (println "This plugin is designed to be used with Leiningen 1.x."))
+  (when (:eval-in-leiningen project)
+    (println "This plugin is not intended for use on other plugins.")
+    (println "Please see https://github.com/technomancy/leiningen/blob/master/doc/PLUGINS.md"))
   (suggest-profiles)
   (pprint/with-pprint-dispatch pprint/code-dispatch ; kinda gross =\
     (pprint/pprint (project-map-to-defproject (suggest-project-map project))))
