@@ -1,6 +1,6 @@
 (defproject hi "1.0.0"
   :dependencies [[ordered "1.1.0"]
-                 [org.clojure/clojure "1.3.0"]]
+                 [clojure "1.3.0"]]
   :dev-dependencies [[swank-clojure "1.4.0"]
                      [lein-tar "1.0.6"]
                      [robert/hooke "1.1.3"]

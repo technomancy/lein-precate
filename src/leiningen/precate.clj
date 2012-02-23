@@ -49,7 +49,6 @@
         project (dissoc project :multi-deps)]
     (reduce multi-deps-profile project deps)))
 
-;; TODO: catch org.clojure special-cases
 (def dev-deps-special-cases {'swank-clojure ['lein-swank "1.4.1"]
                              'lein-multi nil})
 
@@ -62,8 +61,16 @@
       (update-in project [:plugins] (fnil conj {}) replacement)
       project)))
 
+(defn add-org-clojure [dependencies]
+  (for [[artifact version] dependencies]
+    (if (#{'clojure 'clojure-contrib} artifact)
+      [(symbol "org.clojure" (name artifact)) version]
+      [artifact version])))
+
 (defn special-case-dev-deps [project]
-  (reduce special-case-dep project dev-deps-special-cases))
+  (reduce special-case-dep
+          (update-in project [:dependencies] add-org-clojure)
+          dev-deps-special-cases))
 
 (defn min-lein-version [project]
   (assoc project :min-lein-version "2.0.0"))
