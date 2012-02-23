@@ -49,14 +49,16 @@
         project (dissoc project :multi-deps)]
     (reduce multi-deps-profile project deps)))
 
+;; TODO: catch org.clojure special-cases
 (def dev-deps-special-cases {'swank-clojure ['lein-swank "1.4.1"]
                              'lein-multi nil})
 
 (defn special-case-dep [project [dev-dep replacement]]
-  (let [project (update-in project [:dev-dependencies]
-                           (fn [dev-deps] (remove #(= dev-dep (first %))
-                                                 dev-deps)))]
-    (if replacement
+  (let [find #(= dev-dep (first %))
+        contains-old? (some find (:dev-dependencies project))
+        project (update-in project [:dev-dependencies]
+                           (fn [dev-deps] (remove find dev-deps)))]
+    (if (and contains-old? replacement)
       (update-in project [:plugins] (fnil conj {}) replacement)
       project)))
 
@@ -81,6 +83,7 @@
 
 (def vec-paths [:source-path :java-source-path :test-path :resources-path])
 
+;; TODO: pluralize keys
 (defn- vec-pathize [project key]
   (if-let [path (project key)]
     (assoc project key (vector (.replace path (:root project) "")))
