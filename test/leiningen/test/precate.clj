@@ -13,13 +13,13 @@
             :dependencies {'ordered "1.1.0" 'org.clojure/clojure "1.3.0"}
             :min-lein-version "2.0.0"
             :profiles {:dev {:dependencies {'robert/hooke "1.1.3"}
-                             :resources-path ["junk"]}
+                             :resource-paths ["junk"]}
                        :1.2.1 {:dependencies {'org.clojure/clojure "1.2.1"}}
                        :1.4.0 {:dependencies {'cheshire "2.2.0"
                                               'org.clojure/clojure "1.4.0-beta1"
                                               'slingshot "0.10.1"}}}
             :plugins {'lein-tar "1.0.6"
                       'lein-swank "1.4.1"}}
-           (dissoc p1 :source-path :resources-path :root)))
-    (is (= ["src/clj"] (:source-path p1)))
-    (is (= ["whatever"] (:resources-path p1)))))
+           (dissoc p1 :source-paths :resource-paths :root)))
+    (is (= ["src/clj"] (:source-paths p1)))
+    (is (= ["stuff" "whatever"] (:resource-paths p1)))))

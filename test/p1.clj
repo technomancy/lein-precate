@@ -9,6 +9,7 @@
                "1.4.0" [[org.clojure/clojure "1.4.0-beta1"]
                         [slingshot "0.10.1"]
                         [cheshire "2.2.0"]]}
+  :resource-paths ["stuff"]
   :resources-path "whatever"
   :source-path "src/clj"
   :extra-classpath-dirs ["junk"])

@@ -79,7 +79,7 @@
   (if-let [ecd (:extra-classpath-dirs project)]
     (-> (dissoc project :extra-classpath-dirs)
         (update-in [:profiles :dev] (fnil into {}) {})
-        (update-in [:profiles :dev :resources-path] (fnil into []) ecd))
+        (update-in [:profiles :dev :resource-paths] (fnil into []) ecd))
     project))
 
 (defn repositories-format [project]
@@ -88,16 +88,18 @@
 (defn dependencies-format [project]
   (update-in project [:dependencies] (partial into {})))
 
-(def vec-paths [:source-path :java-source-path :test-path :resources-path])
+(def vec-paths {:source-path :source-paths, :java-source-path :java-source-paths
+                :test-path :test-paths, :resources-path :resource-paths})
 
-;; TODO: pluralize keys
 (defn- vec-pathize [project key]
   (if-let [path (project key)]
-    (assoc project key (vector (.replace path (:root project) "")))
+    (assoc (dissoc project key) (vec-paths key)
+           (vec (for [p (conj (project (vec-paths key)) path)]
+                  (.replace p (:root project) ""))))
     project))
 
 (defn paths-as-vectors [project]
-  (reduce vec-pathize project vec-paths))
+  (reduce vec-pathize project (keys vec-paths)))
 
 (defn dissoc-empty [project key]
   (if (empty? (project key))
