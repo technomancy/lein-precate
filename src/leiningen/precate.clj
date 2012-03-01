@@ -130,6 +130,12 @@
                               (:name project))) ~(:version project)
      ~@(apply concat (dissoc project :name :group :version :root))))
 
+(defn pprint-project [project]
+  (pprint/with-pprint-dispatch pprint/code-dispatch
+    (pprint/cl-format true "~<(~;~a ~a ~s~^ ~1i~_~@<~@{~<~w~^ ~w~:>~^ ~_~}~:>~;)~:>~%"
+                      (concat (take 3 project)
+                              (list (partition 2 (drop 3 project)))))))
+
 (defn precate
   "Suggest a new project.clj that's compatible with Leiningen 2."
   [project]
@@ -139,6 +145,5 @@
     (println "This plugin is not intended for use on other plugins.")
     (println "Please see https://github.com/technomancy/leiningen/blob/master/doc/PLUGINS.md"))
   (suggest-profiles)
-  (pprint/with-pprint-dispatch pprint/code-dispatch ; kinda gross =\
-    (pprint/pprint (project-map-to-defproject (suggest-project-map project))))
+  (pprint-project (project-map-to-defproject (suggest-project-map project)))
   (flush))
