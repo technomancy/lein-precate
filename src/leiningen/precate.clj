@@ -37,12 +37,12 @@
       (-> (dissoc project :dev-dependencies)
           (update-in [:plugins] (fnil into {}) plugins)
           (update-in [:profiles :dev] (fnil into {}) {})
-          (update-in [:profiles :dev :dependencies] (fnil into {}) dev)))
+          (update-in [:profiles :dev :dependencies] (fnil into []) dev)))
     project))
 
 (defn multi-deps-profile [project [profile deps]]
   (update-in project [:profiles (keyword profile) :dependencies]
-             (fnil into {}) deps))
+             (fnil into []) deps))
 
 (defn multi-deps [project]
   (let [deps (:multi-deps project)
@@ -58,7 +58,7 @@
         project (update-in project [:dev-dependencies]
                            (fn [dev-deps] (remove find dev-deps)))]
     (if (and contains-old? replacement)
-      (update-in project [:plugins] (fnil conj {}) replacement)
+      (update-in project [:plugins] (fnil conj []) replacement)
       project)))
 
 (defn add-org-clojure [dependencies]
@@ -86,7 +86,7 @@
   (update-in project [:repositories] (partial into {})))
 
 (defn dependencies-format [project]
-  (update-in project [:dependencies] (partial into {})))
+  (update-in project [:dependencies] vec))
 
 (def vec-paths {:source-path :source-paths, :java-source-path :java-source-paths
                 :test-path :test-paths, :resources-path :resource-paths})
