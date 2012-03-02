@@ -33,11 +33,16 @@
 
 (defn dev-dependencies [project]
   (if-let [dd (:dev-dependencies project)]
-    (let [[plugins dev] ((juxt filter remove) plugin? dd)]
-      (-> (dissoc project :dev-dependencies)
-          (update-in [:plugins] (fnil into {}) plugins)
-          (update-in [:profiles :dev] (fnil into {}) {})
-          (update-in [:profiles :dev :dependencies] (fnil into []) dev)))
+    (let [[plugins dev] ((juxt filter remove) plugin? dd)
+          project (dissoc project :dev-dependencies)
+          project (if (seq plugins)
+                    (update-in project [:plugins] (fnil into []) plugins)
+                    project)]
+      (if (seq dev)
+        (-> project
+            (update-in [:profiles :dev] (fnil into {}) {})
+            (update-in [:profiles :dev :dependencies] (fnil into []) dev))
+        project))
     project))
 
 (defn multi-deps-profile [project [profile deps]]
@@ -82,6 +87,16 @@
         (update-in [:profiles :dev :resource-paths] (fnil into []) ecd))
     project))
 
+(defn test-resources-path [project]
+  (let [path (or (:test-resources-path project)
+                 (:dev-resources-path project)
+                 "test-resources")]
+    (if (.exists (io/file path))
+      (-> (dissoc project :test-resources-path :dev-resources-path)
+          (update-in [:profiles :dev] (fnil into {}) {})
+          (update-in [:profiles :dev :resource-paths] (fnil conj []) path))
+      project)))
+
 (defn repositories-format [project]
   (update-in project [:repositories] (partial into {})))
 
@@ -120,6 +135,7 @@
       multi-deps
       min-lein-version
       extra-classpath-dirs
+      test-resources-path
       repositories-format
       dependencies-format
       dissoc-empty-keys
