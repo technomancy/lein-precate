@@ -5,7 +5,7 @@ Suggest a new project.clj that's compatible with Leiningen 2.
 ## Usage
 
 ```
-$ lein plugin install lein-precate 0.1.0
+$ lein plugin install lein-precate 0.2.0
 $ cat project.clj # the original 1.x-compatible version:
 (defproject clojure-http-client "1.1.1-SNAPSHOT"
   :description "An HTTP client for Clojure."
