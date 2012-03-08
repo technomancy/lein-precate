@@ -142,8 +142,8 @@
       paths-as-vectors))
 
 (defn project-map-to-defproject [project]
-  `(~'defproject ~(symbol (or (:group project)
-                              (:name project))) ~(:version project)
+  `(~'defproject ~(symbol (or (:group project) (:name project)) (:name project))
+     ~(:version project)
      ~@(apply concat (dissoc project :name :group :version :root))))
 
 (defn pprint-project [project]
