@@ -1,4 +1,4 @@
-(defproject hi "1.0.0"
+(defproject hello/hi "1.0.0"
   :dependencies [[ordered "1.1.0"]
                  [clojure "1.3.0"]]
   :dev-dependencies [[swank-clojure "1.4.0"]
