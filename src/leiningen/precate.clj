@@ -31,6 +31,9 @@
 (defn- plugin? [[artifact _]]
   (re-find #"^lein-" (name artifact)))
 
+(defn- type->extension [dep]
+  (replace {:type :extension} dep))
+
 (defn dev-dependencies [project]
   (if-let [dd (:dev-dependencies project)]
     (let [[plugins dev] ((juxt filter remove) plugin? dd)
@@ -41,13 +44,14 @@
       (if (seq dev)
         (-> project
             (update-in [:profiles :dev] (fnil into {}) {})
-            (update-in [:profiles :dev :dependencies] (fnil into []) dev))
+            (update-in [:profiles :dev :dependencies] (fnil into [])
+                       (map type->extension dev)))
         project))
     project))
 
 (defn multi-deps-profile [project [profile deps]]
   (update-in project [:profiles (keyword profile) :dependencies]
-             (fnil into []) deps))
+             (fnil into []) (map type->extension deps)))
 
 (defn multi-deps [project]
   (let [deps (:multi-deps project)
@@ -67,10 +71,10 @@
       project)))
 
 (defn add-org-clojure [dependencies]
-  (for [[artifact version] dependencies]
+  (for [[artifact version & opts] dependencies]
     (if (#{'clojure 'clojure-contrib} artifact)
       [(symbol "org.clojure" (name artifact)) version]
-      [artifact version])))
+      (type->extension (reduce conj [artifact version] opts)))))
 
 (defn special-case-dev-deps [project]
   (reduce special-case-dep
