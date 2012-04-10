@@ -13,6 +13,7 @@
                         [slingshot "0.10.1"]
                         [cheshire "2.2.0"]
                         [something-pre "0.0.1" :type "pom"]]}
+  :javac-options {:destdir "classes/"}
   :resource-paths ["stuff"]
   :resources-path "whatever"
   :source-path "src/clj"

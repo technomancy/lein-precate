@@ -101,6 +101,11 @@
           (update-in [:profiles :dev :resource-paths] (fnil conj []) path))
       project)))
 
+(defn javac-options [project]
+  (if (:javac-options project)
+    (update-in project [:javac-options] (partial apply concat))
+    project))
+
 (defn repositories-format [project]
   (update-in project [:repositories] (partial into {})))
 
@@ -140,6 +145,7 @@
       min-lein-version
       extra-classpath-dirs
       test-resources-path
+      javac-options
       repositories-format
       dependencies-format
       dissoc-empty-keys

@@ -14,6 +14,7 @@
                            ['org.clojure/clojure "1.3.0"]
                            ['something "0.0.1" :extension "pom" :classifier "sources"]]
             :min-lein-version "2.0.0"
+            :javac-options [:destdir "classes/"]
             :profiles {:dev {:dependencies [['robert/hooke "1.1.3"]
                                             ['something-dev "0.0.1" :extension "pom"]]
                              :resource-paths ["junk"]}
